@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">PenguinPay</string>
+    <string name="unknown_version">Unknown Version</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_conditions">Terms &amp; Conditions</string>
+    <string name="app_version">App Version</string>
+    <string name="are_you_sure_you_want_to_exit_the_app">Are you sure you want to exit the app?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="arrow_back">Arrow Back</string>
+    <string name="footer">Copyright © %1$d PenguinPay™. All rights served.</string>
+</resources>
