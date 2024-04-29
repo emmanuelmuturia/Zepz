@@ -21,12 +21,12 @@ val Typography = Typography(
     headlineLarge = TextStyle(
         fontFamily = Caveat,
         fontSize = 32.sp,
-        color = Color.White,
+        color = Color.Black,
         fontWeight = FontWeight.ExtraBold
     ),
 
     titleLarge = TextStyle(
-        color = Color.White,
+        color = Color.Black,
         fontFamily = Caveat,
         fontSize = 28.sp,
         fontWeight = FontWeight.Bold
@@ -35,12 +35,12 @@ val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = Caveat,
         fontSize = 21.sp,
-        color = Color.White,
+        color = Color.Black,
         fontWeight = FontWeight.Medium
     ),
 
     labelLarge = TextStyle(
-        color = Color.White,
+        color = Color.Black,
         fontFamily = Caveat,
         fontSize = 14.sp,
         fontWeight = FontWeight.Normal

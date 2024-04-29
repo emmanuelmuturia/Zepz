@@ -1,7 +1,7 @@
 package penguinpay.penguinpay.main.dependencyInjection
 
 import android.app.Application
-import emmanuelmuturia.ktor.BuildConfig
+import emmanuelmuturia.penguinpay.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import penguinpay.penguinpay.home.dependencyInjection.homeKoinModule

@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TheAndroidAppTemplate"
+rootProject.name = "PenguinPay"
 include(":app")
  

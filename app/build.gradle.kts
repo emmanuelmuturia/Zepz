@@ -13,10 +13,10 @@ plugins {
     alias(notation = libs.plugins.ksp)
 
     // The Google Plugins...
-    alias(notation = libs.plugins.gms.google.services)
-    alias(notation = libs.plugins.firebase.crashlytics)
-    alias(notation = libs.plugins.secrets.gradle.plugin)
-    alias(notation = libs.plugins.firebase.performance)
+    // alias(notation = libs.plugins.gms.google.services)
+    // alias(notation = libs.plugins.firebase.crashlytics)
+    // alias(notation = libs.plugins.secrets.gradle.plugin)
+    // alias(notation = libs.plugins.firebase.performance)
 
 }
 

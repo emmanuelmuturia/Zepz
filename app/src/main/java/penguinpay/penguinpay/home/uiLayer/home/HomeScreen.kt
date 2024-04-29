@@ -1,5 +1,7 @@
 package penguinpay.penguinpay.home.uiLayer.home
 
+import android.graphics.Paint.Style
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
@@ -8,9 +10,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,7 +26,9 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,9 +39,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 import penguinpay.penguinpay.commons.domainLayer.state.PenguinPayState
@@ -44,6 +53,7 @@ import penguinpay.penguinpay.commons.uiLayer.components.PenguinPayBackgroundImag
 import penguinpay.penguinpay.commons.uiLayer.components.PenguinPayHeader
 import penguinpay.penguinpay.commons.uiLayer.state.ErrorScreen
 import penguinpay.penguinpay.commons.uiLayer.state.LoadingScreen
+import penguinpay.penguinpay.commons.uiLayer.theme.Caveat
 
 @Composable
 fun HomeScreen() {
@@ -69,7 +79,9 @@ fun HomeScreen() {
         )
     }
 
-    when (penguinPayState) {
+    HomeScreenElements()
+
+    /*when (penguinPayState) {
 
         is PenguinPayState.Loading -> LoadingScreen()
 
@@ -77,7 +89,7 @@ fun HomeScreen() {
 
         else -> HomeScreenElements()
 
-    }
+    }*/
 
 }
 
@@ -99,14 +111,13 @@ fun HomeScreenElements() {
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(space = 7.dp)
+                verticalArrangement = Arrangement.spacedBy(space = 7.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                item { NameTextField() }
+                item { NameTextField(label = "First Name...") }
 
-                item { NameTextField() }
-
-                item { PhoneNumberTextField() }
+                item { NameTextField(label = "Last Name...") }
 
                 item { CountryList() }
 
@@ -125,18 +136,24 @@ fun HomeScreenElements() {
 }
 
 @Composable
-fun NameTextField() {
+fun NameTextField(label: String) {
+
+    var name by rememberSaveable { mutableStateOf(value = "") }
 
     OutlinedTextField(
-        value = "",
-        onValueChange = { it },
-        label = { Text(text = "") },
+        value = name,
+        onValueChange = { name = it },
+        label = { Text(text = label, style = MaterialTheme.typography.labelLarge) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             capitalization = KeyboardCapitalization.Sentences
         ),
         singleLine = true,
-        shape = RoundedCornerShape(size = 21.dp)
+        shape = RoundedCornerShape(size = 21.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.Black,
+            unfocusedBorderColor = Color.Black
+        )
     )
 
 }
@@ -145,55 +162,68 @@ fun NameTextField() {
 @Composable
 fun CountryList() {
 
-    val countries = arrayOf("Kenya", "Nigeria", "Tanzania", "Uganda")
+    val countries = mapOf(
+        254 to "Kenya",
+        234 to "Nigeria",
+        255 to "Tanzania",
+        256 to "Uganda"
+    )
 
     var isExpanded by remember { mutableStateOf(value = false) }
 
-    var selectedCountry by remember { mutableStateOf(value = countries[0]) }
+    var selectedCountry by remember { mutableStateOf(value = countries[254]) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(all = 28.dp)
-    ) {
+    var phoneNumber by rememberSaveable { mutableStateOf(value = "") }
 
-        ExposedDropdownMenuBox(
-            expanded = isExpanded,
-            onExpandedChange = { isExpanded = !isExpanded }) {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .menuAnchor()
-                    .border(border = BorderStroke(width = 3.dp, color = Color.Black)),
-                readOnly = true,
-                value = "",
-                onValueChange = { },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = isExpanded
-                    )
-                },
-                textStyle = MaterialTheme.typography.bodyLarge
-            )
+        Box {
 
-            ExposedDropdownMenu(modifier = Modifier
-                .background(color = Color.White)
-                .border(border = BorderStroke(width = 3.dp, color = Color.White)),
+            ExposedDropdownMenuBox(
+
                 expanded = isExpanded,
-                onDismissRequest = { isExpanded = false }) {
+                onExpandedChange = { isExpanded = !isExpanded }) {
 
-                countries.forEach { country ->
-
-                    DropdownMenuItem(text = {
-                        Text(
-                            text = country,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Black
+                OutlinedTextField(
+                    modifier = Modifier
+                        .menuAnchor()
+                        .border(border = BorderStroke(width = 2.1.dp, color = Color.Black)),
+                    readOnly = true,
+                    value = selectedCountry!!,
+                    onValueChange = { },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = isExpanded
                         )
-                    }, onClick = {
-                        selectedCountry = country
-                        isExpanded = false
-                    })
+                    },
+                    textStyle = TextStyle(
+                        color = Color.Black,
+                        fontFamily = Caveat,
+                        fontSize = 25.sp
+                    )
+                )
+
+                ExposedDropdownMenu(modifier = Modifier
+                    .background(color = Color.White)
+                    .border(border = BorderStroke(width = 1.dp, color = Color.White)),
+                    expanded = isExpanded,
+                    onDismissRequest = { isExpanded = false }) {
+
+                    countries.forEach { country ->
+
+                        DropdownMenuItem(text = {
+                            Text(
+                                text = country.value,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Black
+                            )
+                        }, onClick = {
+                            phoneNumber = "${country.key} "
+                            selectedCountry = country.value
+                            isExpanded = false
+                        })
+
+                    }
 
                 }
 
@@ -201,52 +231,66 @@ fun CountryList() {
 
         }
 
+        OutlinedTextField(
+            value = phoneNumber,
+            onValueChange = { phoneNumber = it },
+            label = { Text(text = "Phone Number...", style = MaterialTheme.typography.labelLarge) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            ),
+            singleLine = true,
+            shape = RoundedCornerShape(size = 21.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Black,
+                unfocusedBorderColor = Color.Black
+            )
+        )
+
     }
-
-}
-
-@Composable
-fun PhoneNumberTextField() {
-
-    OutlinedTextField(
-        value = "",
-        onValueChange = { it },
-        label = { Text(text = "") },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
-        ),
-        singleLine = true,
-        shape = RoundedCornerShape(size = 21.dp)
-    )
 
 }
 
 @Composable
 fun AmountToSendTextField() {
 
+    var amountToSend by rememberSaveable { mutableStateOf(value = "") }
+
     OutlinedTextField(
-        value = "",
-        onValueChange = { it },
-        label = { Text(text = "") },
+        value = amountToSend,
+        onValueChange = { amountToSend = it },
+        label = { Text(text = "Amount To Send...", style = MaterialTheme.typography.labelLarge) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
         singleLine = true,
-        shape = RoundedCornerShape(size = 21.dp)
+        shape = RoundedCornerShape(size = 21.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.Black,
+            unfocusedBorderColor = Color.Black
+        )
     )
 
 }
 
 @Composable
 fun AmountToBeReceived() {
-    Text(text = "", style = MaterialTheme.typography.bodyLarge)
+    Text(
+        text = "Amount Receivable: 1100",
+        style = MaterialTheme.typography.titleLarge,
+        color = Color.Black,
+        overflow = TextOverflow.Visible
+    )
 }
 
 @Composable
 fun SendButton() {
 
+    val context = LocalContext.current
+
     Button(
-        onClick = { /*TODO*/ },
+        onClick = {
+            Toast.makeText(context, "Your money was successfully sent...", Toast.LENGTH_LONG).show()
+        },
         shape = RoundedCornerShape(size = 21.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
     ) { Text(text = "Send", style = MaterialTheme.typography.labelLarge, color = Color.White) }
