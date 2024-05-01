@@ -1,5 +1,7 @@
 package penguinpay.penguinpay.home.domainLayer
 
-interface HomeRepository {
+fun interface HomeRepository {
+
+    fun getReceivableAmount(sendableAmount: String?, selectedCountry: String): String?
 
 }

@@ -1,6 +1,5 @@
 package penguinpay.penguinpay.home.uiLayer.home
 
-import android.graphics.Paint.Style
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -10,11 +9,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,12 +42,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
-import penguinpay.penguinpay.commons.domainLayer.state.PenguinPayState
 import penguinpay.penguinpay.commons.uiLayer.components.ExitConfirmationDialog
 import penguinpay.penguinpay.commons.uiLayer.components.PenguinPayBackgroundImage
 import penguinpay.penguinpay.commons.uiLayer.components.PenguinPayHeader
-import penguinpay.penguinpay.commons.uiLayer.state.ErrorScreen
-import penguinpay.penguinpay.commons.uiLayer.state.LoadingScreen
 import penguinpay.penguinpay.commons.uiLayer.theme.Caveat
 
 @Composable
@@ -65,6 +57,15 @@ fun HomeScreen() {
     val exitDialogState = rememberSaveable { mutableStateOf(value = false) }
 
     val context = LocalContext.current
+
+    val countries = mapOf(
+        254 to "Kenya",
+        234 to "Nigeria",
+        255 to "Tanzania",
+        256 to "Uganda"
+    )
+
+    var selectedCountry by remember { mutableStateOf(value = countries[254]) }
 
     BackHandler(enabled = true) { exitDialogState.value = !exitDialogState.value }
 
@@ -79,22 +80,12 @@ fun HomeScreen() {
         )
     }
 
-    HomeScreenElements()
-
-    /*when (penguinPayState) {
-
-        is PenguinPayState.Loading -> LoadingScreen()
-
-        is PenguinPayState.Error -> ErrorScreen()
-
-        else -> HomeScreenElements()
-
-    }*/
+    HomeScreenElements(homeScreenViewModel = homeScreenViewModel, countries = countries, selectedCountry = selectedCountry!!, onCountrySelect = { selectedCountry = it })
 
 }
 
 @Composable
-fun HomeScreenElements() {
+fun HomeScreenElements(homeScreenViewModel: HomeScreenViewModel, countries: Map<Int, String>, selectedCountry: String, onCountrySelect: (String) -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -119,11 +110,9 @@ fun HomeScreenElements() {
 
                 item { NameTextField(label = "Last Name...") }
 
-                item { CountryList() }
+                item { CountryList(countries = countries, selectedCountry = selectedCountry, onCountrySelect = onCountrySelect) }
 
-                item { AmountToSendTextField() }
-
-                item { AmountToBeReceived() }
+                item { SendableAndReceivableAmounts(homeScreenViewModel = homeScreenViewModel, selectedCountry = selectedCountry) }
 
                 item { SendButton() }
 
@@ -160,18 +149,9 @@ fun NameTextField(label: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CountryList() {
-
-    val countries = mapOf(
-        254 to "Kenya",
-        234 to "Nigeria",
-        255 to "Tanzania",
-        256 to "Uganda"
-    )
+fun CountryList(countries: Map<Int, String>, selectedCountry: String, onCountrySelect: (String) -> Unit) {
 
     var isExpanded by remember { mutableStateOf(value = false) }
-
-    var selectedCountry by remember { mutableStateOf(value = countries[254]) }
 
     var phoneNumber by rememberSaveable { mutableStateOf(value = "") }
 
@@ -218,8 +198,8 @@ fun CountryList() {
                                 color = Color.Black
                             )
                         }, onClick = {
-                            phoneNumber = "${country.key} "
-                            selectedCountry = country.value
+                            phoneNumber = "+${country.key} "
+                            onCountrySelect(country.value)
                             isExpanded = false
                         })
 
@@ -251,35 +231,42 @@ fun CountryList() {
 }
 
 @Composable
-fun AmountToSendTextField() {
+fun SendableAndReceivableAmounts(homeScreenViewModel: HomeScreenViewModel, selectedCountry: String) {
 
-    var amountToSend by rememberSaveable { mutableStateOf(value = "") }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(space = 7.dp)
+    ) {
 
-    OutlinedTextField(
-        value = amountToSend,
-        onValueChange = { amountToSend = it },
-        label = { Text(text = "Amount To Send...", style = MaterialTheme.typography.labelLarge) },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
-        ),
-        singleLine = true,
-        shape = RoundedCornerShape(size = 21.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = Color.Black,
-            unfocusedBorderColor = Color.Black
+        var amountToSend by rememberSaveable { mutableStateOf(value = "") }
+
+        val amountToReceive = homeScreenViewModel.getReceivableAmount(sendableAmount = amountToSend, selectedCountry = selectedCountry) ?: ""
+
+        OutlinedTextField(
+            value = amountToSend,
+            onValueChange = { amountToSend = it },
+            label = { Text(text = "Amount To Send...", style = MaterialTheme.typography.labelLarge) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            ),
+            singleLine = true,
+            shape = RoundedCornerShape(size = 21.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Black,
+                unfocusedBorderColor = Color.Black
+            )
         )
-    )
 
-}
+        Text(
+            text = "Amount Receivable: $amountToReceive",
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.Black,
+            overflow = TextOverflow.Visible
+        )
 
-@Composable
-fun AmountToBeReceived() {
-    Text(
-        text = "Amount Receivable: 1100",
-        style = MaterialTheme.typography.titleLarge,
-        color = Color.Black,
-        overflow = TextOverflow.Visible
-    )
+    }
+
 }
 
 @Composable

@@ -18,6 +18,9 @@ plugins {
     // alias(notation = libs.plugins.secrets.gradle.plugin)
     // alias(notation = libs.plugins.firebase.performance)
 
+    // The Kotlin Serialization Plugin...
+    alias(notation = libs.plugins.kotlinx.serialization)
+
 }
 
 android {
@@ -103,6 +106,15 @@ dependencies {
 
     // The Image Loading Library (Coil)...
     implementation(dependencyNotation = libs.coil)
+
+    // The Kotlin Serialization Library...
+    implementation(dependencyNotation = libs.kotlinx.serialization)
+
+    // The Ktor Client Dependencies...
+    implementation(dependencyNotation = libs.ktor.client.android)
+    implementation(dependencyNotation = libs.ktor.client.serialization)
+    implementation(dependencyNotation = libs.ktor.client.content.negotiation)
+    implementation(dependencyNotation = libs.ktor.client.logging)
 
     // The Kotlin Coroutines Library...
     implementation(dependencyNotation = libs.kotlinx.coroutines.core)

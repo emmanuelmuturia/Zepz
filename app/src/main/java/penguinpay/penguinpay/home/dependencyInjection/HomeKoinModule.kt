@@ -15,7 +15,8 @@ val homeKoinModule = module {
 
     viewModel {
         HomeScreenViewModel(
-            application = androidApplication()
+            application = androidApplication(),
+            homeRepository = get()
         )
     }
 

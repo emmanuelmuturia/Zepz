@@ -19,4 +19,7 @@ plugins {
     alias(notation = libs.plugins.secrets.gradle.plugin) apply false
     alias(notation = libs.plugins.firebase.performance) apply false
 
+    // The Kotlin Serialization Plugin...
+    alias(notation = libs.plugins.kotlinx.serialization) apply false
+
 }

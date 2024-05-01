@@ -43,6 +43,12 @@ roomVersion = "2.6.1"
 # The Image Loading Library (Coil)...
 coilVersion = "2.6.0"
 
+# The Kotlin Serialization Library...
+kotlinxSerializationVersion = "1.6.0"
+
+# The Ktor Client...
+ktorVersion = "2.3.10"
+
 # The Kotlin Coroutines...
 kotlinCoroutinesVersion = "1.8.0"
 
@@ -97,6 +103,15 @@ androidx-room-testing = { group = "androidx.room", name = "room-testing", versio
 # The Image Loading Library (Coil)...
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilVersion" }
 
+# The Kotlin Serialization Library (JSON)...
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json",version.ref = "kotlinxSerializationVersion" }
+
+# The Ktor Client Dependencies...
+ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktorVersion" }
+ktor-client-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktorVersion" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktorVersion" }
+
 # The Kotlin Coroutines Library...
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutinesVersion" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutinesVersion" }
@@ -146,3 +161,6 @@ gms-google-services = { id = "com.google.gms.google-services", version.ref = "go
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsVersion" }
 secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 firebase-performance = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerformanceVersion" }
+
+# The Kotlin Serialization Plugin (JSON)...
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinVersion" }
