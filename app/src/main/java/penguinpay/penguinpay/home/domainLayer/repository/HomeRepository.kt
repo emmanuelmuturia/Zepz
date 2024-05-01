@@ -1,4 +1,4 @@
-package penguinpay.penguinpay.home.domainLayer
+package penguinpay.penguinpay.home.domainLayer.repository
 
 fun interface HomeRepository {
 

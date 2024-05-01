@@ -46,6 +46,7 @@ import penguinpay.penguinpay.commons.uiLayer.components.ExitConfirmationDialog
 import penguinpay.penguinpay.commons.uiLayer.components.PenguinPayBackgroundImage
 import penguinpay.penguinpay.commons.uiLayer.components.PenguinPayHeader
 import penguinpay.penguinpay.commons.uiLayer.theme.Caveat
+import penguinpay.penguinpay.home.dataLayer.local.Countries
 
 @Composable
 fun HomeScreen() {
@@ -58,14 +59,7 @@ fun HomeScreen() {
 
     val context = LocalContext.current
 
-    val countries = mapOf(
-        254 to "Kenya",
-        234 to "Nigeria",
-        255 to "Tanzania",
-        256 to "Uganda"
-    )
-
-    var selectedCountry by remember { mutableStateOf(value = countries[254]) }
+    var selectedCountry by remember { mutableStateOf(value = Countries.countries[254]) }
 
     BackHandler(enabled = true) { exitDialogState.value = !exitDialogState.value }
 
@@ -80,12 +74,21 @@ fun HomeScreen() {
         )
     }
 
-    HomeScreenElements(homeScreenViewModel = homeScreenViewModel, countries = countries, selectedCountry = selectedCountry!!, onCountrySelect = { selectedCountry = it })
+    HomeScreenElements(
+        homeScreenViewModel = homeScreenViewModel,
+        countries = Countries.countries,
+        selectedCountry = selectedCountry!!,
+        onCountrySelect = { selectedCountry = it })
 
 }
 
 @Composable
-fun HomeScreenElements(homeScreenViewModel: HomeScreenViewModel, countries: Map<Int, String>, selectedCountry: String, onCountrySelect: (String) -> Unit) {
+private fun HomeScreenElements(
+    homeScreenViewModel: HomeScreenViewModel,
+    countries: Map<Int, String>,
+    selectedCountry: String,
+    onCountrySelect: (String) -> Unit
+) {
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -110,9 +113,20 @@ fun HomeScreenElements(homeScreenViewModel: HomeScreenViewModel, countries: Map<
 
                 item { NameTextField(label = "Last Name...") }
 
-                item { CountryList(countries = countries, selectedCountry = selectedCountry, onCountrySelect = onCountrySelect) }
+                item {
+                    CountryList(
+                        countries = countries,
+                        selectedCountry = selectedCountry,
+                        onCountrySelect = onCountrySelect
+                    )
+                }
 
-                item { SendableAndReceivableAmounts(homeScreenViewModel = homeScreenViewModel, selectedCountry = selectedCountry) }
+                item {
+                    SendableAndReceivableAmounts(
+                        homeScreenViewModel = homeScreenViewModel,
+                        selectedCountry = selectedCountry
+                    )
+                }
 
                 item { SendButton() }
 
@@ -125,7 +139,7 @@ fun HomeScreenElements(homeScreenViewModel: HomeScreenViewModel, countries: Map<
 }
 
 @Composable
-fun NameTextField(label: String) {
+private fun NameTextField(label: String) {
 
     var name by rememberSaveable { mutableStateOf(value = "") }
 
@@ -149,7 +163,11 @@ fun NameTextField(label: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CountryList(countries: Map<Int, String>, selectedCountry: String, onCountrySelect: (String) -> Unit) {
+private fun CountryList(
+    countries: Map<Int, String>,
+    selectedCountry: String,
+    onCountrySelect: (String) -> Unit
+) {
 
     var isExpanded by remember { mutableStateOf(value = false) }
 
@@ -169,7 +187,7 @@ fun CountryList(countries: Map<Int, String>, selectedCountry: String, onCountryS
                         .menuAnchor()
                         .border(border = BorderStroke(width = 2.1.dp, color = Color.Black)),
                     readOnly = true,
-                    value = selectedCountry!!,
+                    value = selectedCountry,
                     onValueChange = { },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
@@ -231,7 +249,10 @@ fun CountryList(countries: Map<Int, String>, selectedCountry: String, onCountryS
 }
 
 @Composable
-fun SendableAndReceivableAmounts(homeScreenViewModel: HomeScreenViewModel, selectedCountry: String) {
+private fun SendableAndReceivableAmounts(
+    homeScreenViewModel: HomeScreenViewModel,
+    selectedCountry: String
+) {
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -241,12 +262,20 @@ fun SendableAndReceivableAmounts(homeScreenViewModel: HomeScreenViewModel, selec
 
         var amountToSend by rememberSaveable { mutableStateOf(value = "") }
 
-        val amountToReceive = homeScreenViewModel.getReceivableAmount(sendableAmount = amountToSend, selectedCountry = selectedCountry) ?: ""
+        val amountToReceive = homeScreenViewModel.getReceivableAmount(
+            sendableAmount = amountToSend,
+            selectedCountry = selectedCountry
+        ) ?: ""
 
         OutlinedTextField(
             value = amountToSend,
             onValueChange = { amountToSend = it },
-            label = { Text(text = "Amount To Send...", style = MaterialTheme.typography.labelLarge) },
+            label = {
+                Text(
+                    text = "Amount To Send...",
+                    style = MaterialTheme.typography.labelLarge
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             ),
@@ -270,7 +299,7 @@ fun SendableAndReceivableAmounts(homeScreenViewModel: HomeScreenViewModel, selec
 }
 
 @Composable
-fun SendButton() {
+private fun SendButton() {
 
     val context = LocalContext.current
 

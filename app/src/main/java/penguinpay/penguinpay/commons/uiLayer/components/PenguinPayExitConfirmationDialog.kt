@@ -1,6 +1,5 @@
 package penguinpay.penguinpay.commons.uiLayer.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -43,12 +42,12 @@ fun ExitConfirmationDialog(
                     onDismiss()
                 },
                 shape = RoundedCornerShape(size = 21.dp),
-                border = BorderStroke(width = 1.dp, color = Color.White),
-                colors = ButtonDefaults.buttonColors(Color.Transparent)
+                colors = ButtonDefaults.buttonColors(Color.Black)
             ) {
                 Text(
                     text = stringResource(R.string.yes),
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White
                 )
             }
         },
@@ -56,18 +55,18 @@ fun ExitConfirmationDialog(
             Button(
                 onClick = { onDismiss() },
                 shape = RoundedCornerShape(size = 21.dp),
-                border = BorderStroke(width = 1.dp, color = Color.White),
-                colors = ButtonDefaults.buttonColors(Color.Transparent)
+                colors = ButtonDefaults.buttonColors(Color.Black)
             ) {
                 Text(
                     text = stringResource(R.string.no),
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White
                 )
             }
         },
-        containerColor = Color.Transparent,
-        textContentColor = Color.White,
-        titleContentColor = Color.White,
+        containerColor = Color.White,
+        textContentColor = Color.Black,
+        titleContentColor = Color.Black,
         properties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true

@@ -6,7 +6,7 @@ import penguinpay.penguinpay.commons.domainLayer.state.PenguinPayState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import penguinpay.penguinpay.home.domainLayer.HomeRepository
+import penguinpay.penguinpay.home.domainLayer.repository.HomeRepository
 
 class HomeScreenViewModel(application: Application, private val homeRepository: HomeRepository) :
     AndroidViewModel(application = application) {
